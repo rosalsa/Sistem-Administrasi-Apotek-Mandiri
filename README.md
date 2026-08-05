@@ -102,7 +102,7 @@ http://localhost:3000
 | -------- | ---------- | ------------- |
 | Apoteker | `apoteker` | `password123` |
 | Asisten  | `asisten`  | `password123` |
-| PSA      | `psa`      | `password123` |
+| Admin    | `admin`    | `password123` |
 
 ## Struktur Project
 
