@@ -67,6 +67,7 @@ Kemudian sesuaikan konfigurasi berikut.
 
 ```env
 DATABASE_URL=
+NEXTAUTH_URL=
 NEXTAUTH_SECRET=
 ```
 
