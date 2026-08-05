@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================================
+// AUTH & USER
+// ==========================================================
+
+enum Role {
+  APOTEKER
+  ASISTEN_APOTEKER
+  ADMIN
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  username      String   @unique
+  email         String?  @unique
+  passwordHash  String
+  role          Role
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sales         Sale[]
+  purchases     Purchase[]
+  auditLogs     AuditLog[]
+
+  @@index([role])
+  @@map("users")
+}
+
+// ==========================================================
+// MASTER DATA
+// ==========================================================
+
+enum MedicineType {
+  TABLET
+  SIRUP
+  AMPUL
+  KAPSUL
+  TUBE
+  TETES_TELINGA
+  TETES_MATA
+  SALEP_MATA
+}
+
+model MedicineCategory {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  medicines Medicine[]
+
+  @@map("medicine_categories")
+}
+
+model Supplier {
+  id           String     @id @default(cuid())
+  name         String     // Nama PBF
+  address      String?
+  phone        String?
+  medicines    Medicine[]
+  purchases    Purchase[]
+  debts        Debt[]
+  invoices     Invoice[]
+  createdAt    DateTime   @default(now())
+
+  @@map("suppliers")
+}
+
+model Manufacturer {
+  id        String     @id @default(cuid())
+  name      String     // Nama Pabrik
+  medicines Medicine[]
+
+  @@map("manufacturers")
+}
+
+model Medicine {
+  id                String            @id @default(cuid())
+  name              String
+  type              MedicineType
+  categoryId        String?
+  category          MedicineCategory? @relation(fields: [categoryId], references: [id])
+  supplierId        String?
+  supplier          Supplier?         @relation(fields: [supplierId], references: [id])
+  manufacturerId    String?
+  manufacturer      Manufacturer?     @relation(fields: [manufacturerId], references: [id])
+
+  hargaBeli         Decimal           @db.Decimal(12, 2)
+  hargaJualMedis1   Decimal           @db.Decimal(12, 2) // Harga Jual Medis 1 (12%)
+  hargaJualMedis2   Decimal           @db.Decimal(12, 2) // Harga Jual Medis 2 (15%)
+  hargaJualMedis3   Decimal           @db.Decimal(12, 2) // Harga Jual Medis 3 (8.5%)
+  hargaJualUmum     Decimal           @db.Decimal(12, 2)
+
+  stok              Int               @default(0) // stok total (unit terkecil)
+  isiPerBox         Int               @default(1)
+  minStok           Int               @default(10) // batas stok menipis
+
+  isActive          Boolean           @default(true)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  batches           MedicineBatch[]
+  purchases         Purchase[]
+  saleDetails       SaleDetail[]
+  stockLogs         StockLog[]
+
+  @@index([name])
+  @@index([type])
+  @@map("medicines")
+}
+
+// Batch per faktur/expired, agar FEFO (First Expired First Out) bisa diterapkan
+model MedicineBatch {
+  id            String   @id @default(cuid())
+  medicineId    String
+  medicine      Medicine @relation(fields: [medicineId], references: [id])
+  noFaktur      String
+  qtyMasuk      Int
+  qtySisa       Int
+  expiredDate   DateTime
+  createdAt     DateTime @default(now())
+
+  purchase      Purchase? @relation(fields: [purchaseId], references: [id])
+  purchaseId    String?
+
+  @@index([medicineId])
+  @@index([expiredDate])
+  @@map("medicine_batches")
+}
+
+// ==========================================================
+// TRANSAKSI MASUK (RESTOCK)
+// ==========================================================
+
+model Purchase {
+  id            String    @id @default(cuid())
+  medicineId    String
+  medicine      Medicine  @relation(fields: [medicineId], references: [id])
+  supplierId    String?
+  supplier      Supplier? @relation(fields: [supplierId], references: [id])
+
+  noFaktur      String
+  jumlahBox     Int
+  isiPerBox     Int
+  totalMasuk    Int
+  expiredBatch  DateTime
+
+  hutang        Decimal?  @db.Decimal(12, 2)
+  jatuhTempo    DateTime?
+
+  petugasId     String
+  petugas       User      @relation(fields: [petugasId], references: [id])
+
+  createdAt     DateTime  @default(now())
+
+  batches       MedicineBatch[]
+  debt          Debt?
+
+  @@index([medicineId])
+  @@index([createdAt])
+  @@map("purchases")
+}
+
+// ==========================================================
+// TRANSAKSI KELUAR (PENJUALAN)
+// ==========================================================
+
+enum HargaType {
+  MEDIS
+  UMUM
+}
+
+model Sale {
+  id            String       @id @default(cuid())
+  noTransaksi   String       @unique
+  kasirId       String
+  kasir         User         @relation(fields: [kasirId], references: [id])
+
+  totalItem     Int
+  totalHarga    Decimal      @db.Decimal(12, 2)
+  bayar         Decimal      @db.Decimal(12, 2)
+  kembalian     Decimal      @db.Decimal(12, 2)
+
+  createdAt     DateTime     @default(now())
+
+  details       SaleDetail[]
+
+  @@index([createdAt])
+  @@map("sales")
+}
+
+model SaleDetail {
+  id          String    @id @default(cuid())
+  saleId      String
+  sale        Sale      @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  medicineId  String
+  medicine    Medicine  @relation(fields: [medicineId], references: [id])
+
+  hargaType   HargaType
+  qty         Int
+  hargaSatuan Decimal   @db.Decimal(12, 2)
+  subtotal    Decimal   @db.Decimal(12, 2)
+
+  @@index([saleId])
+  @@index([medicineId])
+  @@map("sale_details")
+}
+
+// ==========================================================
+// UTANG & FAKTUR
+// ==========================================================
+
+enum DebtStatus {
+  LUNAS
+  BELUM_LUNAS
+  JATUH_TEMPO
+}
+
+model Debt {
+  id            String     @id @default(cuid())
+  purchaseId    String     @unique
+  purchase      Purchase   @relation(fields: [purchaseId], references: [id])
+  supplierId    String
+  supplier      Supplier   @relation(fields: [supplierId], references: [id])
+
+  totalHutang   Decimal    @db.Decimal(12, 2)
+  sudahDibayar  Decimal    @db.Decimal(12, 2) @default(0)
+  sisaHutang    Decimal    @db.Decimal(12, 2)
+  jatuhTempo    DateTime
+  status        DebtStatus @default(BELUM_LUNAS)
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status])
+  @@map("debts")
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  noFaktur    String   @unique
+  supplierId  String
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  total       Decimal  @db.Decimal(12, 2)
+  tanggal     DateTime
+  fileUrl     String?
+  createdAt   DateTime @default(now())
+
+  @@map("invoices")
+}
+
+// ==========================================================
+// LOG SISTEM
+// ==========================================================
+
+enum StockLogType {
+  MASUK
+  KELUAR
+  KOREKSI
+}
+
+model StockLog {
+  id          String       @id @default(cuid())
+  medicineId  String
+  medicine    Medicine     @relation(fields: [medicineId], references: [id])
+  type        StockLogType
+  qty         Int
+  stokSebelum Int
+  stokSesudah Int
+  keterangan  String?
+  createdAt   DateTime     @default(now())
+
+  @@index([medicineId])
+  @@map("stock_logs")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  action     String   // CREATE, UPDATE, DELETE, LOGIN, TRANSACTION
+  entity     String   // Medicine, Sale, Purchase, dll
+  entityId   String?
+  detail     Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@map("audit_logs")
+}
