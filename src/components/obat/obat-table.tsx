@@ -40,6 +40,12 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [deletingAll, setDeletingAll] = useState(false);
 
+  const allJenisInData = useMemo(() => {
+    const known = new Set(JENIS_OPTIONS);
+    const custom = Array.from(new Set(data.map((m) => m.type).filter((t) => !known.has(t))));
+    return [...JENIS_OPTIONS, ...custom.sort()];
+  }, [data]);
+
   const filtered = useMemo(() => {
     let result = data.filter((m) => {
       const matchSearch =
@@ -173,7 +179,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
             className="rounded-lg border border-slate-200 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="">Semua Jenis</option>
-            {JENIS_OPTIONS.map((j) => <option key={j} value={j}>{JENIS_LABEL[j]}</option>)}
+            {allJenisInData.map((j) => <option key={j} value={j}>{JENIS_LABEL[j] ?? j}</option>)}
           </select>
 
           <select

@@ -40,16 +40,6 @@ model User {
 // MASTER DATA
 // ==========================================================
 
-enum MedicineType {
-  TABLET
-  SIRUP
-  AMPUL
-  KAPSUL
-  TUBE
-  TETES_TELINGA
-  TETES_MATA
-  SALEP_MATA
-}
 
 model MedicineCategory {
   id        String     @id @default(cuid())
@@ -84,7 +74,7 @@ model Manufacturer {
 model Medicine {
   id                String            @id @default(cuid())
   name              String
-  type              MedicineType
+  type              String
   categoryId        String?
   category          MedicineCategory? @relation(fields: [categoryId], references: [id])
   supplierId        String?

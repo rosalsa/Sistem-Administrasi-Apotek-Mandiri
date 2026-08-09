@@ -58,6 +58,22 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = (user as any).role;
         token.id = (user as any).id;
+        token.name = (user as any).name;
+      } else if (token.id) {
+        // Refresh nama & role dari DB tiap request, supaya perubahan nama akun
+        // (mis. lewat menu Kelola Akun) langsung tampil tanpa perlu logout ulang
+        try {
+          const fresh = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { name: true, role: true, isActive: true },
+          });
+          if (fresh && fresh.isActive) {
+            token.name = fresh.name;
+            token.role = fresh.role;
+          }
+        } catch {
+          // biarkan token lama jika DB tidak bisa diakses sementara
+        }
       }
       return token;
     },

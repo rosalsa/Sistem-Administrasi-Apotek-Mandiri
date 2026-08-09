@@ -33,7 +33,7 @@ const MENU: MenuItem[] = [
   { href: "/monitoring-stok", label: "Monitoring Stok", icon: Boxes, roles: ["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
   { href: "/utang-faktur", label: "Kelola Utang/Faktur", icon: Receipt, roles: ["APOTEKER", "ADMIN"] },
   { href: "/laporan", label: "Laporan Penjualan", icon: BarChart3, roles: ["APOTEKER", "ADMIN"] },
-  { href: "/ganti-password", label: "Ganti Password", icon: KeyRound, roles: ["APOTEKER"] },
+  { href: "/ganti-password", label: "Kelola Akun", icon: KeyRound, roles: ["APOTEKER"] },
 ];
 
 export function Sidebar({ role }: { role: "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN" }) {

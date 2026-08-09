@@ -3,10 +3,7 @@ import { z } from "zod";
 export const RoleEnum = z.enum(["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"]);
 export type RoleType = z.infer<typeof RoleEnum>;
 
-export const MedicineTypeEnum = z.enum([
-  "TABLET", "SIRUP", "AMPUL", "KAPSUL", "TUBE",
-  "TETES_TELINGA", "TETES_MATA", "SALEP_MATA",
-]);
+export const MedicineTypeEnum = z.string().min(1, "Jenis obat wajib diisi");
 
 // ---------- Data Obat ----------
 const medicineBaseFields = {
@@ -53,18 +50,22 @@ export const restockSchema = z.object({
 });
 export type RestockFormValues = z.infer<typeof restockSchema>;
 
-// ---------- Ganti Password ----------
-export const changePasswordSchema = z
+// ---------- Kelola Akun (Ganti Nama & Password per akun) ----------
+export const accountUpdateSchema = z
   .object({
-    oldPassword: z.string().min(1, "Password lama wajib diisi"),
-    newPassword: z.string().min(8, "Password baru minimal 8 karakter"),
-    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi"),
+    name: z.string().min(3, "Nama minimal 3 karakter"),
+    newPassword: z.string().optional().or(z.literal("")),
+    confirmPassword: z.string().optional().or(z.literal("")),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => !data.newPassword || data.newPassword.length >= 8, {
+    message: "Password baru minimal 8 karakter",
+    path: ["newPassword"],
+  })
+  .refine((data) => !data.newPassword || data.newPassword === data.confirmPassword, {
     message: "Konfirmasi password tidak cocok",
     path: ["confirmPassword"],
   });
-export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+export type AccountUpdateValues = z.infer<typeof accountUpdateSchema>;
 
 // ---------- Domain Types (untuk dipakai di UI, hasil query prisma) ----------
 export interface MedicineListItem {

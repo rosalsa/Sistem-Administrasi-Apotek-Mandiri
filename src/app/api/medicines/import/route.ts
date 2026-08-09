@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 import * as XLSX from "xlsx";
 
 const CAN_MANAGE = ["APOTEKER"]; // hanya Apoteker yang boleh kelola data obat/restock
-const JENIS_VALID = ["TABLET", "SIRUP", "AMPUL", "KAPSUL", "TUBE", "TETES_TELINGA", "TETES_MATA", "SALEP_MATA"];
 
 // Kolom yang diharapkan di file Excel/CSV (header baris pertama, tidak case sensitive):
 // nama_obat, jenis, no_faktur, harga_beli, harga_jual_medis_1, harga_jual_medis_2, harga_jual_medis_3, harga_jual_umum,
@@ -56,7 +55,7 @@ export async function POST(req: NextRequest) {
     const rowNum = i + 2; // +2 karena baris 1 = header
 
     const name = String(r.nama_obat ?? r.nama ?? "").trim();
-    const jenis = String(r.jenis ?? r.type ?? "").trim().toUpperCase();
+    const jenis = String(r.jenis ?? r.type ?? "").trim();
     const noFaktur = String(r.no_faktur ?? r.nomor_faktur ?? "").trim() || `IMPORT-${Date.now()}-${i}`;
     const hargaBeli = Number(r.harga_beli ?? 0);
     const hargaJualMedis1 = Number(r.harga_jual_medis_1 ?? r.harga_jual_medis1 ?? r.harga_jual_medis ?? 0);
@@ -71,7 +70,7 @@ export async function POST(req: NextRequest) {
     const minStok = Number(r.min_stok ?? 10) || 10;
 
     if (!name) { errors.push(`Baris ${rowNum}: nama obat wajib diisi`); continue; }
-    if (!JENIS_VALID.includes(jenis)) { errors.push(`Baris ${rowNum}: jenis "${jenis}" tidak valid`); continue; }
+    if (!jenis) { errors.push(`Baris ${rowNum}: jenis obat wajib diisi`); continue; }
     if (!hargaBeli || !hargaJualMedis1 || !hargaJualMedis2 || !hargaJualMedis3 || !hargaJualUmum) { errors.push(`Baris ${rowNum}: harga tidak valid`); continue; }
 
     const expiredDate = expiredRaw instanceof Date ? expiredRaw : new Date(expiredRaw);
@@ -91,7 +90,7 @@ export async function POST(req: NextRequest) {
         const medicine = await tx.medicine.create({
           data: {
             name,
-            type: jenis as any,
+            type: jenis,
             supplierId: supplier.id,
             manufacturerId: manufacturer.id,
             hargaBeli,

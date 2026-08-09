@@ -1,26 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid,
 } from "recharts";
+import { Loader2 } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 
-// Data contoh — di implementasi nyata, fetch dari /api/dashboard/chart?range=monthly|yearly
-const MONTHLY_DATA = [
-  { label: "1", total: 1200000 }, { label: "5", total: 1800000 }, { label: "10", total: 1500000 },
-  { label: "15", total: 2400000 }, { label: "20", total: 2100000 }, { label: "25", total: 2800000 },
-  { label: "30", total: 3200000 },
-];
-const YEARLY_DATA = [
-  { label: "Jan", total: 32000000 }, { label: "Feb", total: 28000000 }, { label: "Mar", total: 35000000 },
-  { label: "Apr", total: 31000000 }, { label: "Mei", total: 40000000 }, { label: "Jun", total: 38000000 },
-  { label: "Jul", total: 42000000 },
-];
+type ChartPoint = { label: string; total: number };
 
 export function DashboardChart() {
   const [range, setRange] = useState<"monthly" | "yearly">("monthly");
-  const data = range === "monthly" ? MONTHLY_DATA : YEARLY_DATA;
+  const [data, setData] = useState<ChartPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    fetch(`/api/dashboard/chart?range=${range}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (active) setData(json?.data ?? []);
+      })
+      .catch(() => {
+        if (active) setData([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [range]);
+
+  const hasRevenue = data.some((d) => d.total > 0);
 
   return (
     <div>
@@ -42,29 +55,40 @@ export function DashboardChart() {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={280}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#059669" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#059669" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis dataKey="label" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-          <YAxis
-            tick={{ fontSize: 11, fill: "#64748b" }}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`}
-          />
-          <Tooltip
-            formatter={(value: number) => formatRupiah(value)}
-            contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }}
-          />
-          <Area type="monotone" dataKey="total" stroke="#059669" strokeWidth={2} fill="url(#colorTotal)" />
-        </AreaChart>
-      </ResponsiveContainer>
+      {loading ? (
+        <div className="h-[280px] flex items-center justify-center text-slate-400">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
+      ) : !hasRevenue ? (
+        <div className="h-[280px] flex flex-col items-center justify-center text-slate-400 gap-1">
+          <p className="text-sm font-medium">Belum ada pendapatan</p>
+          <p className="text-xs">Statistik akan muncul setelah ada transaksi penjualan</p>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={280}>
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#059669" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <XAxis dataKey="label" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+            <YAxis
+              tick={{ fontSize: 11, fill: "#64748b" }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(v) => `${(v / 1000000).toFixed(1)}jt`}
+            />
+            <Tooltip
+              formatter={(value: number) => formatRupiah(value)}
+              contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }}
+            />
+            <Area type="monotone" dataKey="total" stroke="#059669" strokeWidth={2} fill="url(#colorTotal)" />
+          </AreaChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }

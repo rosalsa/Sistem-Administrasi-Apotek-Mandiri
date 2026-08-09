@@ -15,6 +15,7 @@ const JENIS_LABEL: Record<string, string> = {
   TABLET: "Tablet", SIRUP: "Sirup", AMPUL: "Ampul", KAPSUL: "Kapsul", TUBE: "Tube",
   TETES_TELINGA: "Tetes Telinga", TETES_MATA: "Tetes Mata", SALEP_MATA: "Salep Mata",
 };
+const OTHER_VALUE = "__OTHER__";
 
 export function MedicineFormModal({
   initialData,
@@ -38,7 +39,8 @@ export function MedicineFormModal({
     defaultValues: initialData
       ? {
           name: initialData.name,
-          type: initialData.type as any,
+          type: JENIS_OPTIONS.includes(initialData.type) ? initialData.type : OTHER_VALUE,
+          jenisLain: JENIS_OPTIONS.includes(initialData.type) ? "" : initialData.type,
           hargaBeli: initialData.hargaBeli,
           hargaJualMedis1: initialData.hargaJualMedis1,
           hargaJualMedis2: initialData.hargaJualMedis2,
@@ -53,8 +55,19 @@ export function MedicineFormModal({
 
   const hutangKePbf = watch("hutangKePbf");
   const hasHutang = !!hutangKePbf && Number(hutangKePbf) > 0;
+  const jenisWatch = watch("type");
+  const isOtherJenis = jenisWatch === OTHER_VALUE;
 
   async function onSubmit(values: MedicineFormValues | MedicineEditFormValues) {
+    const raw = values as any;
+    const finalType = raw.type === OTHER_VALUE ? String(raw.jenisLain ?? "").trim() : raw.type;
+    if (raw.type === OTHER_VALUE && !finalType) {
+      toast.error("Jenis obat (manual) wajib diisi");
+      return;
+    }
+    const payload = { ...raw, type: finalType };
+    delete payload.jenisLain;
+
     setLoading(true);
     try {
       const res = await fetch(
@@ -62,7 +75,7 @@ export function MedicineFormModal({
         {
           method: initialData ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -125,8 +138,15 @@ export function MedicineFormModal({
               <select {...register("type")} className="input">
                 <option value="">Pilih jenis</option>
                 {JENIS_OPTIONS.map((j) => <option key={j} value={j}>{JENIS_LABEL[j]}</option>)}
+                <option value={OTHER_VALUE}>Lainnya (ketik manual)</option>
               </select>
             </Field>
+
+            {isOtherJenis && (
+              <Field label="Jenis Obat (Manual)" error={errors.jenisLain?.message}>
+                <input {...register("jenisLain")} className="input" placeholder="Contoh: Krim, Inhaler, dll" />
+              </Field>
+            )}
 
             {!isEdit && (
               <Field label="Nomor Faktur" error={errors.noFaktur?.message}>
