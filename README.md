@@ -1,121 +1,88 @@
 # Sistem Informasi Operasional Apotek
 
-Aplikasi ini merupakan sistem informasi operasional apotek yang dibangun menggunakan **Next.js (App Router)**, **TypeScript**, **Prisma ORM**, **PostgreSQL**, dan **NextAuth**. Project ini dibuat untuk membantu pengelolaan operasional apotek, mulai dari manajemen data obat, restock, transaksi penjualan, hingga pembuatan laporan.
+Kerangka project Next.js (App Router) + TypeScript + Prisma + PostgreSQL + NextAuth
+untuk Sistem Informasi Operasional Apotek, sesuai spesifikasi yang diberikan.
 
-## Teknologi yang Digunakan
+## ⚠️ Status Project
 
-* Next.js (App Router)
-* TypeScript
-* Prisma ORM
-* PostgreSQL
-* NextAuth
-* Tailwind CSS
-* React Hook Form
-* Zod
+Ini adalah **kerangka kerja (scaffold) yang siap dikembangkan**, bukan aplikasi yang 100% selesai.
+Struktur database, autentikasi + RBAC, layout, dan semua halaman utama sudah dibuat dengan logika bisnis
+inti (perhitungan stok otomatis, validasi form, dsb). Beberapa bagian masih menggunakan **data simulasi
+di sisi client** (ditandai komentar `// TODO`) yang perlu Anda sambungkan ke API route yang sudah disediakan.
 
-## Fitur
+## Yang Sudah Dibuat
 
-Beberapa fitur yang sudah tersedia pada project ini antara lain:
+- ✅ Skema database lengkap (`prisma/schema.prisma`) — 14 tabel dengan relasi & index
+- ✅ Autentikasi Credentials (NextAuth) dengan role APOTEKER / ASISTEN_APOTEKER / PSA
+- ✅ Middleware RBAC (`middleware.ts`) yang membatasi akses halaman per role
+- ✅ Sidebar dinamis sesuai hak akses role
+- ✅ Halaman: Login, Dashboard, Data Obat, Restock, Penjualan (Kasir), Riwayat Penjualan,
+  Monitoring Stok, Kelola Utang/Faktur, Laporan Penjualan, Ganti Password
+- ✅ API route contoh dengan transaksi atomik Prisma: `/api/sales` (penjualan + kurangi stok
+  otomatis) dan `/api/restock` (restock + tambah stok otomatis + audit log)
+- ✅ Validasi form dengan React Hook Form + Zod
+- ✅ Format Rupiah & tanggal Indonesia (`src/lib/utils.ts`)
+- ✅ Toast notification, dialog konfirmasi, badge status stok/expired
+- ✅ Seed data contoh (3 user, PBF, pabrik, 3 obat)
 
-* Login menggunakan NextAuth (Credentials)
-* Role Based Access Control (RBAC)
-* Dashboard
-* Manajemen Data Obat
-* Restock Obat
-* Transaksi Penjualan
-* Riwayat Penjualan
-* Monitoring Stok
-* Kelola Utang/Faktur
-* Laporan Penjualan
-* Ganti Password
+## Yang Perlu Anda Lanjutkan
 
-Selain itu sudah tersedia middleware untuk pembatasan akses berdasarkan role, validasi form menggunakan Zod, utilitas format rupiah dan tanggal Indonesia, serta contoh implementasi transaksi menggunakan Prisma.
+1. **Sambungkan komponen client ke API**: beberapa komponen (form tambah obat, kasir, restock,
+   ganti password) saat ini menyimpan perubahan hanya di state React (simulasi). Ganti bagian
+   berkomentar `// TODO` dengan `fetch()` ke API route yang sesuai.
+2. **Lengkapi API route** untuk `medicines` (CRUD), `debts` (pembayaran hutang), dan
+   `change-password` — pola strukturnya sudah dicontohkan di `/api/sales` dan `/api/restock`.
+3. **Install `shadcn/ui`** komponen sesuai kebutuhan (`npx shadcn@latest init` lalu
+   `npx shadcn@latest add button dialog table ...`) jika ingin memakai komponen shadcn asli,
+   alih-alih elemen HTML+Tailwind biasa yang saat ini dipakai agar scaffold tetap ringan.
+4. **Import Excel/CSV** pada Data Obat: gunakan library `xlsx` (sudah ada di `package.json`)
+   untuk parsing file di sisi client sebelum dikirim ke API.
+5. **Export PDF/Excel** pada Laporan: gunakan `jspdf` + `jspdf-autotable` dan `xlsx`
+   (sudah terpasang di `package.json`, tinggal diimplementasikan di `laporan-view.tsx`).
+6. **FEFO (First Expired First Out)**: tabel `MedicineBatch` sudah dirancang untuk ini — saat
+   penjualan, ambil batch dengan `expiredDate` terdekat lebih dulu saat mengurangi stok.
 
-## Kondisi Project
-
-Saat ini project sudah memiliki struktur utama yang dapat langsung dikembangkan. Sebagian besar halaman, database, autentikasi, dan routing sudah tersedia.
-
-Masih terdapat beberapa fitur yang perlu disempurnakan, terutama pada bagian integrasi antara frontend dan API karena beberapa komponen masih menggunakan data sementara selama proses pengembangan.
-
-## Pengembangan Selanjutnya
-
-Beberapa bagian yang masih dapat dikembangkan di antaranya:
-
-* Menghubungkan seluruh form ke API Route.
-* Melengkapi endpoint CRUD Data Obat.
-* Menambahkan endpoint pembayaran utang/faktur.
-* Menyelesaikan fitur ganti password.
-* Menambahkan import data Excel/CSV.
-* Menambahkan export laporan ke PDF dan Excel.
-* Mengimplementasikan sistem FEFO (First Expired First Out) pada proses penjualan berdasarkan batch obat.
-
-## Instalasi
-
-Install dependency terlebih dahulu.
+## Instalasi & Menjalankan
 
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-Salin file environment.
-
-```bash
+# 2. Siapkan database PostgreSQL, lalu salin .env.example -> .env
 cp .env.example .env
-```
+# edit DATABASE_URL dan NEXTAUTH_SECRET di .env
 
-Kemudian sesuaikan konfigurasi berikut.
-
-```env
-DATABASE_URL=
-NEXTAUTH_URL=
-NEXTAUTH_SECRET=
-```
-
-Generate Prisma Client dan jalankan migrasi.
-
-```bash
+# 3. Generate Prisma client & jalankan migrasi
 npx prisma generate
 npx prisma migrate dev --name init
-```
 
-Import data awal.
-
-```bash
+# 4. Seed data awal (3 akun contoh)
 npm run prisma:seed
-```
 
-Jalankan project.
-
-```bash
+# 5. Jalankan development server
 npm run dev
 ```
 
-Aplikasi dapat diakses melalui:
+Buka http://localhost:3000 lalu login dengan salah satu akun berikut (password sama untuk semua):
 
-```
-http://localhost:3000
-```
-
-## Akun Demo
-
-| Role     | Username   | Password      |
-| -------- | ---------- | ------------- |
+| Role    | Username   | Password      |
+|---------|-----------|---------------|
 | Apoteker | `apoteker` | `password123` |
 | Asisten  | `asisten`  | `password123` |
-| Admin    | `admin`    | `password123` |
+| PSA      | `psa`      | `password123` |
 
-## Struktur Project
+## Struktur Folder
 
-```text
+```
 apotek/
 ├── prisma/
-│   ├── schema.prisma
-│   └── seed.ts
-├── middleware.ts
+│   ├── schema.prisma       # skema database lengkap
+│   └── seed.ts             # data awal
+├── middleware.ts           # RBAC per role
 ├── src/
 │   ├── app/
 │   │   ├── login/
-│   │   ├── (dashboard)/
+│   │   ├── (dashboard)/    # grup route dengan layout sidebar+navbar
 │   │   │   ├── dashboard/
 │   │   │   ├── obat/
 │   │   │   ├── restock/
@@ -127,19 +94,19 @@ apotek/
 │   │   │   └── ganti-password/
 │   │   ├── api/
 │   │   │   ├── auth/[...nextauth]/
-│   │   │   ├── sales/
-│   │   │   └── restock/
+│   │   │   ├── sales/       # contoh transaksi penjualan atomik
+│   │   │   └── restock/     # contoh transaksi restock atomik
 │   │   └── unauthorized/
-│   ├── components/
-│   ├── lib/
-│   └── types/
+│   ├── components/          # komponen per fitur + ui/
+│   ├── lib/                 # prisma client, auth config, utils
+│   └── types/                # zod schema + TypeScript types
 └── README.md
 ```
 
-## Catatan
+## Catatan Desain
 
-* Menggunakan format mata uang Rupiah (`id-ID`).
-* Menggunakan format tanggal Indonesia.
-* Status stok dibedakan menjadi Aman, Menipis, dan Habis.
-* Monitoring masa berlaku obat mendukung status Aman, Akan Expired, dan Sudah Expired.
-* Struktur database sudah mendukung pencatatan batch obat sehingga dapat dikembangkan menjadi sistem FEFO.
+- Warna utama: putih, hijau (`emerald-600`), biru (`blue-600`) sesuai permintaan.
+- Semua angka uang diformat dengan `Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" })`.
+- Semua tanggal diformat dengan locale `id-ID`.
+- Status stok: **Aman** (hijau) / **Menipis** (kuning) / **Habis** (merah) — logika di `getStockStatus()`.
+- Status expired: **Aman** / **Akan Expired** (H-90) / **Sudah Expired** — logika di `getExpiredStatus()`.
