@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   }
 
   const role = (session.user as any).role;
-  if (!["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"].includes(role)) {
+  if (!["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"].includes(role)) {
     return NextResponse.json({ error: "Anda tidak memiliki akses untuk membuat transaksi" }, { status: 403 });
   }
 

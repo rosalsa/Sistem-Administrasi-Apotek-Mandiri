@@ -12,6 +12,7 @@ datasource db {
 // ==========================================================
 
 enum Role {
+  PSA
   APOTEKER
   ASISTEN_APOTEKER
   ADMIN

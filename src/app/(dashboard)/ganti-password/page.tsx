@@ -8,12 +8,12 @@ export default async function GantiPasswordPage() {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
 
-  if (role !== "APOTEKER") {
+  if (role !== "PSA") {
     return (
       <div className="max-w-md">
         <div className="bg-white rounded-xl border p-6 flex items-start gap-3 text-slate-600">
           <ShieldAlert className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <p className="text-sm">Hanya akun Apoteker yang dapat mengelola nama & password seluruh akun.</p>
+          <p className="text-sm">Hanya akun PSA (Pemilik Sarana Apotek) yang dapat mengelola nama & password seluruh akun.</p>
         </div>
       </div>
     );
@@ -30,7 +30,7 @@ export default async function GantiPasswordPage() {
       <div>
         <h1 className="text-xl font-bold text-slate-800">Ganti Password & Nama Akun</h1>
         <p className="text-sm text-slate-500">
-          Kelola nama tampilan dan password untuk masing-masing akun (Apoteker, Asisten Apoteker, Admin) secara terpisah
+          Kelola nama tampilan dan password untuk masing-masing akun (PSA, Apoteker, Asisten Apoteker, Admin) secara terpisah
         </p>
       </div>
 

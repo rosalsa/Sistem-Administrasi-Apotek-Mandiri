@@ -25,7 +25,7 @@ async function getSalesReport() {
 export default async function LaporanPage() {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
-  const fullAccess = role === "APOTEKER" || role === "ADMIN"; // Asisten = terbatas
+  const fullAccess = role === "PSA" || role === "APOTEKER" || role === "ADMIN"; // Asisten = terbatas
 
   const sales = await getSalesReport();
 

@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const role = (session.user as any).role;
-  if (!["APOTEKER", "ASISTEN_APOTEKER"].includes(role)) {
+  if (!["PSA", "APOTEKER", "ASISTEN_APOTEKER"].includes(role)) {
     return NextResponse.json({ error: "Anda tidak memiliki akses untuk restock" }, { status: 403 });
   }
 

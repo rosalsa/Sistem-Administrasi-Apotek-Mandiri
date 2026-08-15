@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { medicineSchema } from "@/types";
 
-const CAN_MANAGE = ["APOTEKER"]; // hanya Apoteker yang boleh kelola data obat/restock
+const CAN_MANAGE = ["PSA", "APOTEKER"]; // PSA & Apoteker yang boleh kelola data obat/restock
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);

@@ -22,21 +22,21 @@ type MenuItem = {
   href: string;
   label: string;
   icon: React.ElementType;
-  roles: Array<"APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN">;
+  roles: Array<"PSA" | "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN">;
 };
 
 const MENU: MenuItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
-  { href: "/obat", label: "Data Obat", icon: Pill, roles: ["APOTEKER"] },
-  { href: "/input-data", label: "Input Data", icon: ClipboardList, roles: ["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
-  { href: "/riwayat-penjualan", label: "Riwayat Penjualan", icon: History, roles: ["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
-  { href: "/monitoring-stok", label: "Monitoring Stok", icon: Boxes, roles: ["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
-  { href: "/utang-faktur", label: "Kelola Utang/Faktur", icon: Receipt, roles: ["APOTEKER", "ADMIN"] },
-  { href: "/laporan", label: "Laporan Penjualan", icon: BarChart3, roles: ["APOTEKER", "ADMIN"] },
-  { href: "/ganti-password", label: "Kelola Akun", icon: KeyRound, roles: ["APOTEKER"] },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
+  { href: "/obat", label: "Data Obat", icon: Pill, roles: ["PSA", "APOTEKER"] },
+  { href: "/input-data", label: "Input Data", icon: ClipboardList, roles: ["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
+  { href: "/riwayat-penjualan", label: "Riwayat Penjualan", icon: History, roles: ["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
+  { href: "/monitoring-stok", label: "Monitoring Stok", icon: Boxes, roles: ["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"] },
+  { href: "/utang-faktur", label: "Kelola Utang/Faktur", icon: Receipt, roles: ["PSA", "APOTEKER", "ADMIN"] },
+  { href: "/laporan", label: "Laporan Penjualan", icon: BarChart3, roles: ["PSA", "APOTEKER", "ADMIN"] },
+  { href: "/ganti-password", label: "Kelola Akun", icon: KeyRound, roles: ["PSA"] },
 ];
 
-export function Sidebar({ role }: { role: "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN" }) {
+export function Sidebar({ role }: { role: "PSA" | "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN" }) {
   const pathname = usePathname();
   const visibleMenu = MENU.filter((item) => item.roles.includes(role));
   const [confirmLogout, setConfirmLogout] = useState(false);

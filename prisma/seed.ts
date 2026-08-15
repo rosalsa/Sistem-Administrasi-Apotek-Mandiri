@@ -9,6 +9,7 @@ async function main() {
   // ---------- Users ----------
   await prisma.user.createMany({
     data: [
+      { name: "Pemilik Sarana Apotek", username: "psa", email: "psa@apotek.com", passwordHash: password, role: "PSA" },
       { name: "apt. Dede Jamiatul Midiyah, S.Farm", username: "apoteker", email: "apoteker@apotek.com", passwordHash: password, role: "APOTEKER" },
       { name: "Siti Aminah", username: "asisten", email: "asisten@apotek.com", passwordHash: password, role: "ASISTEN_APOTEKER" },
       { name: "Rizky Junaedi", username: "admin", email: "admin@apotek.com", passwordHash: password, role: "ADMIN" },

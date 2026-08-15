@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
-const CAN_MANAGE = ["APOTEKER", "ADMIN"]; // Asisten tidak punya akses Kelola Utang/Faktur
+const CAN_MANAGE = ["PSA", "APOTEKER", "ADMIN"]; // Asisten tidak punya akses Kelola Utang/Faktur
 
 const paymentSchema = z.object({
   amount: z.coerce.number().positive("Jumlah pembayaran harus lebih dari 0"),

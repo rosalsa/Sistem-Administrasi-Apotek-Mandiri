@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import * as XLSX from "xlsx";
 
-const CAN_MANAGE = ["APOTEKER"]; // hanya Apoteker yang boleh kelola data obat/restock
+const CAN_MANAGE = ["PSA", "APOTEKER"]; // PSA & Apoteker yang boleh kelola data obat/restock
 
 // Kolom yang diharapkan di file Excel/CSV (header baris pertama, tidak case sensitive):
 // nama_obat, jenis, no_faktur, harga_beli, harga_jual_medis_1, harga_jual_medis_2, harga_jual_medis_3, harga_jual_umum,

@@ -28,7 +28,7 @@ async function getDebts() {
 export default async function UtangFakturPage() {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
-  const canEdit = ["APOTEKER", "ADMIN"].includes(role); // Asisten tidak dapat mengakses halaman ini
+  const canEdit = ["PSA", "APOTEKER", "ADMIN"].includes(role); // Asisten tidak dapat mengakses halaman ini
 
   const debts = await getDebts();
 

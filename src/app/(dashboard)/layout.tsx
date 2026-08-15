@@ -16,7 +16,7 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const role = (session.user as any).role as "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN";
+  const role = (session.user as any).role as "PSA" | "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN";
 
   return (
     <div className="min-h-screen bg-slate-50">

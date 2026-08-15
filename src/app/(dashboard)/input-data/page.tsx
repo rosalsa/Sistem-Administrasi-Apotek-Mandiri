@@ -57,10 +57,10 @@ async function getData() {
 
 export default async function InputDataPage() {
   const session = await getServerSession(authOptions);
-  const role = (session?.user as any)?.role as "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN";
+  const role = (session?.user as any)?.role as "PSA" | "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN";
 
-  const canRestock = role === "APOTEKER" || role === "ASISTEN_APOTEKER";
-  const canSell = role === "APOTEKER" || role === "ASISTEN_APOTEKER" || role === "ADMIN";
+  const canRestock = role === "PSA" || role === "APOTEKER" || role === "ASISTEN_APOTEKER";
+  const canSell = role === "PSA" || role === "APOTEKER" || role === "ASISTEN_APOTEKER" || role === "ADMIN";
 
   const { restockMedicines, saleMedicines, riwayat } = await getData();
 

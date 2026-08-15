@@ -4,10 +4,10 @@ import Link from "next/link";
 import { ShoppingCart, PackagePlus, PlusCircle, FileBarChart } from "lucide-react";
 
 export function QuickActions({ role }: { role: string }) {
-  const canSell = role === "APOTEKER" || role === "ASISTEN_APOTEKER" || role === "ADMIN"; // Penjualan: semua role kecuali tidak ada yang dikecualikan lagi
-  const canRestock = role === "APOTEKER" || role === "ASISTEN_APOTEKER"; // Restock: Admin tidak punya akses
-  const canManageObat = role === "APOTEKER"; // Input Obat: hanya Apoteker
-  const canSeeLaporan = role === "APOTEKER" || role === "ADMIN"; // Laporan: Asisten tidak punya akses
+  const canSell = role === "PSA" || role === "APOTEKER" || role === "ASISTEN_APOTEKER" || role === "ADMIN"; // Penjualan: semua role
+  const canRestock = role === "PSA" || role === "APOTEKER" || role === "ASISTEN_APOTEKER"; // Restock: Admin tidak punya akses
+  const canManageObat = role === "PSA" || role === "APOTEKER"; // Input Obat: PSA & Apoteker
+  const canSeeLaporan = role === "PSA" || role === "APOTEKER" || role === "ADMIN"; // Laporan: Asisten tidak punya akses
 
   const actions = [
     { href: "/input-data?tab=penjualan", label: "Transaksi Baru", icon: ShoppingCart, show: canSell, color: "bg-emerald-600 hover:bg-emerald-700" },

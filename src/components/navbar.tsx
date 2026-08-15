@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Session } from "next-auth";
 
 const ROLE_LABEL: Record<string, string> = {
+  PSA: "PSA (Pemilik Sarana Apotek)",
   APOTEKER: "Apoteker",
   ASISTEN_APOTEKER: "Asisten Apoteker",
   ADMIN: "Admin",

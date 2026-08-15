@@ -7,9 +7,10 @@ import { Loader2, KeyRound, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-type AccountItem = { id: string; name: string; username: string; role: "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN" };
+type AccountItem = { id: string; name: string; username: string; role: "PSA" | "APOTEKER" | "ASISTEN_APOTEKER" | "ADMIN" };
 
 const ROLE_LABEL: Record<string, string> = {
+  PSA: "PSA (Pemilik Sarana Apotek)",
   APOTEKER: "Apoteker",
   ASISTEN_APOTEKER: "Asisten Apoteker",
   ADMIN: "Admin",

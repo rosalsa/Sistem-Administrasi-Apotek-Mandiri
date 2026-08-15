@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const RoleEnum = z.enum(["APOTEKER", "ASISTEN_APOTEKER", "ADMIN"]);
+export const RoleEnum = z.enum(["PSA", "APOTEKER", "ASISTEN_APOTEKER", "ADMIN"]);
 export type RoleType = z.infer<typeof RoleEnum>;
 
 export const MedicineTypeEnum = z.string().min(1, "Jenis obat wajib diisi");

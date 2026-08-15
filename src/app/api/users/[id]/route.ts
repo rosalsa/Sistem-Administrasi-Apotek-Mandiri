@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { accountUpdateSchema } from "@/types";
 import bcrypt from "bcryptjs";
 
-const CAN_MANAGE = ["APOTEKER"];
+const CAN_MANAGE = ["PSA"]; // hanya PSA yang boleh kelola nama/password semua akun
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);

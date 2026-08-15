@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // Hanya Apoteker (pemilik/pengelola apotek) yang boleh mengelola nama & password ketiga akun
-const CAN_MANAGE = ["APOTEKER"];
+const CAN_MANAGE = ["PSA"]; // hanya PSA yang boleh kelola nama/password semua akun
 
 export async function GET() {
   const session = await getServerSession(authOptions);
