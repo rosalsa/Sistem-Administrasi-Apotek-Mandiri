@@ -116,8 +116,8 @@ function EoqSection({
   const [orderingCost, setOrderingCost] = useState(DEFAULT_ORDERING_COST);
   const [holdingCostPercent, setHoldingCostPercent] = useState(DEFAULT_HOLDING_COST_PERCENT);
   const [allData, setAllData] = useState<EoqItem[]>([]);
-  const [daysTracked, setDaysTracked] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   async function loadData(oc: number, hc: number) {
     setLoading(true);
@@ -125,7 +125,6 @@ function EoqSection({
       const res = await fetch(`/api/monitoring/eoq?orderingCost=${oc}&holdingCostPercent=${hc}`);
       const json = await res.json();
       setAllData(json?.data ?? []);
-      setDaysTracked(json?.params?.daysTracked ?? 0);
     } catch {
       setAllData([]);
     } finally {
@@ -138,6 +137,11 @@ function EoqSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function handleHitung() {
+    setHasCalculated(true);
+    loadData(orderingCost, holdingCostPercent);
+  }
+
   // Hanya tampilkan rekomendasi EOQ untuk obat yang sedang ada di kategori tab aktif (habis / menipis)
   const idSet = useMemo(() => new Set(medicineIds), [medicineIds]);
   const data = useMemo(
@@ -145,15 +149,17 @@ function EoqSection({
     [allData, idSet]
   );
 
+  // Grafik hanya menampilkan obat yang EOQ-nya berhasil dihitung (data penjualan cukup)
+  const chartableData = useMemo(() => data.filter((d) => d.status !== "DATA_KURANG" && d.eoq > 0), [data]);
+  const excludedCount = data.length - chartableData.length;
+
   const chartData = useMemo(
     () =>
-      data
+      chartableData
         .slice(0, 10)
         .map((d) => ({ name: d.name.length > 14 ? d.name.slice(0, 14) + "…" : d.name, "Stok Saat Ini": d.stok, "EOQ (Jumlah Optimal)": d.eoq })),
-    [data]
+    [chartableData]
   );
-
-  const hasEnoughData = daysTracked > 0;
 
   return (
     <div className="space-y-4">
@@ -161,10 +167,7 @@ function EoqSection({
         <div className="flex items-start gap-2 text-slate-500 mb-3">
           <Info className="h-4 w-4 mt-0.5 shrink-0" />
           <p className="text-xs">
-            Rekomendasi EOQ (Economic Order Quantity) untuk obat pada tab <strong>{categoryLabel}</strong> — menghitung jumlah
-            pembelian/restock paling ekonomis berdasarkan permintaan tahunan, biaya pemesanan, dan biaya penyimpanan,
-            supaya stok tidak berlebihan tapi juga tidak kekurangan.
-            {!hasEnoughData && " Belum ada data penjualan yang cukup, jadi rekomendasi di bawah belum bisa dihitung."}
+            Rekomendasi EOQ (Economic Order Quantity) untuk obat pada tab <strong>{categoryLabel}</strong>.
           </p>
         </div>
 
@@ -188,7 +191,7 @@ function EoqSection({
             />
           </div>
           <button
-            onClick={() => loadData(orderingCost, holdingCostPercent)}
+            onClick={handleHitung}
             disabled={loading}
             className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-60"
           >
@@ -200,27 +203,39 @@ function EoqSection({
 
       <div className="bg-white rounded-xl border p-4">
         <h3 className="font-semibold text-slate-800 mb-4">Grafik Stok vs EOQ — {categoryLabel}</h3>
-        {loading ? (
+        {!hasCalculated ? (
+          <div className="h-[280px] flex flex-col items-center justify-center text-slate-400 gap-1 border-2 border-dashed rounded-lg">
+            <p className="text-sm font-medium">Area Grafik</p>
+            <p className="text-xs">Klik tombol "Hitung Ulang" untuk menampilkan grafik perbandingan stok vs EOQ</p>
+          </div>
+        ) : loading ? (
           <div className="h-[280px] flex items-center justify-center text-slate-400">
             <Loader2 className="h-6 w-6 animate-spin" />
           </div>
         ) : chartData.length === 0 ? (
           <div className="h-[280px] flex flex-col items-center justify-center text-slate-400 gap-1">
-            <p className="text-sm font-medium">Belum ada data untuk ditampilkan</p>
-            <p className="text-xs">Grafik akan muncul setelah ada riwayat penjualan untuk obat di kategori ini</p>
+            <p className="text-sm font-medium">Belum ada obat yang berhasil dihitung EOQ-nya</p>
+            <p className="text-xs">Data penjualan obat di kategori ini belum mencukupi untuk perhitungan EOQ</p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} interval={0} angle={-20} textAnchor="end" height={60} />
-              <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="Stok Saat Ini" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="EOQ (Jumlah Optimal)" fill="#059669" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} interval={0} angle={-20} textAnchor="end" height={60} />
+                <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Stok Saat Ini" fill="#94a3b8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="EOQ (Jumlah Optimal)" fill="#059669" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+            {excludedCount > 0 && (
+              <p className="text-xs text-slate-400 mt-2">
+                {excludedCount} obat lain tidak ditampilkan di grafik karena data penjualannya belum mencukupi untuk perhitungan EOQ.
+              </p>
+            )}
+          </>
         )}
       </div>
 
