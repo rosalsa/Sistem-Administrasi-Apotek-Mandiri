@@ -168,7 +168,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Cari nama obat, PBF, atau pabrik..."
-            className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
 
@@ -176,7 +176,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
           <select
             value={jenisFilter}
             onChange={(e) => { setJenisFilter(e.target.value); setPage(1); }}
-            className="rounded-lg border border-slate-200 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="rounded-lg border border-slate-200 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500"
           >
             <option value="">Semua Jenis</option>
             {allJenisInData.map((j) => <option key={j} value={j}>{JENIS_LABEL[j] ?? j}</option>)}
@@ -185,7 +185,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="rounded-lg border border-slate-200 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="rounded-lg border border-slate-200 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500"
           >
             <option value="">Semua Status</option>
             <option value="aman">Aman</option>
@@ -212,7 +212,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
 
           <button
             onClick={() => { setEditItem(null); setModalOpen(true); }}
-            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 text-sm font-medium"
+            className="flex items-center gap-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 text-sm font-medium"
           >
             <Plus className="h-4 w-4" /> Tambah Obat
           </button>
@@ -266,7 +266,7 @@ export function ObatTable({ initialData }: { initialData: MedicineListItem[] }) 
                   const colorMap: Record<string, string> = {
                     red: "bg-red-100 text-red-700",
                     yellow: "bg-amber-100 text-amber-700",
-                    green: "bg-emerald-100 text-emerald-700",
+                    green: "bg-brand-100 text-brand-700",
                   };
                   return (
                     <tr key={m.id} className="hover:bg-slate-50">

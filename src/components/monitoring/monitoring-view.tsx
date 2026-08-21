@@ -40,7 +40,7 @@ export function MonitoringStokView({ medicines }: { medicines: MedicineItem[] })
   const colorMap: Record<string, string> = {
     red: "border-red-200 bg-red-50 text-red-700",
     yellow: "border-amber-200 bg-amber-50 text-amber-700",
-    green: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    green: "border-brand-200 bg-brand-50 text-brand-700",
     slate: "border-slate-200 bg-slate-50 text-slate-600",
   };
 
@@ -193,7 +193,7 @@ function EoqSection({
           <button
             onClick={handleHitung}
             disabled={loading}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-60"
+            className="bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-60"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             Hitung Ulang
@@ -214,7 +214,7 @@ function EoqSection({
           </div>
         ) : chartData.length === 0 ? (
           <div className="h-[280px] flex flex-col items-center justify-center text-slate-400 gap-1">
-            <p className="text-sm font-medium">Belum ada obat yang berhasil dihitung EOQ-nya</p>
+            <p className="text-sm font-medium">Belum ada obat yang berhasil dihitung</p>
             <p className="text-xs">Data penjualan obat di kategori ini belum mencukupi untuk perhitungan EOQ</p>
           </div>
         ) : (
@@ -227,7 +227,7 @@ function EoqSection({
                 <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="Stok Saat Ini" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="EOQ (Jumlah Optimal)" fill="#059669" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="EOQ (Jumlah Optimal)" fill="#00007F" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             {excludedCount > 0 && (

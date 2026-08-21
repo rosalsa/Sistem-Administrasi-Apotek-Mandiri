@@ -226,7 +226,7 @@ export function MedicineFormModal({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2 disabled:opacity-60"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 flex items-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Simpan
@@ -245,7 +245,7 @@ export function MedicineFormModal({
         }
         .input:focus {
           outline: none;
-          box-shadow: 0 0 0 2px #10b981;
+          box-shadow: 0 0 0 2px #00007F;
         }
       `}</style>
     </div>

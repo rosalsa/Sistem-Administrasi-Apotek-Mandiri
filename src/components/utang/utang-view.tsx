@@ -13,7 +13,7 @@ type DebtItem = {
 };
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  LUNAS: { label: "Lunas", color: "bg-emerald-100 text-emerald-700" },
+  LUNAS: { label: "Lunas", color: "bg-brand-100 text-brand-700" },
   BELUM_LUNAS: { label: "Belum Lunas", color: "bg-amber-100 text-amber-700" },
   JATUH_TEMPO: { label: "Jatuh Tempo", color: "bg-red-100 text-red-700" },
 };
@@ -104,7 +104,7 @@ export function UtangFakturView({ initialData, canEdit }: { initialData: DebtIte
                         <button
                           disabled={d.status === "LUNAS"}
                           onClick={() => setPayItem(d)}
-                          className="text-xs font-medium text-emerald-600 hover:underline disabled:text-slate-300 disabled:no-underline"
+                          className="text-xs font-medium text-brand-600 hover:underline disabled:text-slate-300 disabled:no-underline"
                         >
                           Bayar
                         </button>
@@ -140,7 +140,7 @@ export function UtangFakturView({ initialData, canEdit }: { initialData: DebtIte
             <button
               onClick={submitPayment}
               disabled={submitting}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               Konfirmasi Pembayaran

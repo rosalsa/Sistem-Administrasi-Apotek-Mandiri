@@ -36,7 +36,7 @@ export function RiwayatPenjualanTable({ initialData }: { initialData: Sale[] }) 
           <button
             key={f}
             onClick={() => setFilterType(f)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize ${filterType === f ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize ${filterType === f ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
           >
             {f}
           </button>
@@ -75,7 +75,7 @@ export function RiwayatPenjualanTable({ initialData }: { initialData: Sale[] }) 
                     <td className="px-4 py-2.5 text-right font-medium text-slate-700">{formatRupiah(s.total)}</td>
                     <td className="px-4 py-2.5 text-slate-500">{s.kasir}</td>
                     <td className="px-4 py-2.5 text-right">
-                      <button onClick={() => setDetail(s)} className="p-1.5 rounded-lg hover:bg-slate-100 text-emerald-600" title="Detail">
+                      <button onClick={() => setDetail(s)} className="p-1.5 rounded-lg hover:bg-slate-100 text-brand-600" title="Detail">
                         <Eye className="h-4 w-4" />
                       </button>
                     </td>

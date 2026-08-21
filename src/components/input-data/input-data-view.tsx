@@ -47,7 +47,7 @@ export function InputDataView({
             onClick={() => switchTab("penjualan")}
             className={cn(
               "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
-              tab === "penjualan" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-50"
+              tab === "penjualan" ? "bg-brand-600 text-white" : "text-slate-600 hover:bg-slate-50"
             )}
           >
             <ShoppingCart className="h-4 w-4" /> Penjualan
@@ -56,7 +56,7 @@ export function InputDataView({
             onClick={() => switchTab("restock")}
             className={cn(
               "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
-              tab === "restock" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-50"
+              tab === "restock" ? "bg-brand-600 text-white" : "text-slate-600 hover:bg-slate-50"
             )}
           >
             <PackagePlus className="h-4 w-4" /> Barang Masuk / Restock
@@ -68,7 +68,7 @@ export function InputDataView({
       {tab === "restock" && canRestock && (
         <div className="space-y-3">
           <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-            <PackagePlus className="h-4 w-4 text-emerald-600" /> Barang Masuk / Restock
+            <PackagePlus className="h-4 w-4 text-brand-600" /> Barang Masuk / Restock
           </h3>
           <RestockView medicines={restockMedicines} initialRiwayat={initialRiwayat} />
         </div>

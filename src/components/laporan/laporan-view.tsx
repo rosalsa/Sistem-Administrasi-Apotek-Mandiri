@@ -50,7 +50,7 @@ export function LaporanView({ initialData, fullAccess }: { initialData: SaleRow[
             <button
               key={f}
               onClick={() => setFilterType(f)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize ${filterType === f ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize ${filterType === f ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
             >
               {f}
             </button>

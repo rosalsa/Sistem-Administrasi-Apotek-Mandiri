@@ -65,7 +65,7 @@ function AccountCard({ account }: { account: AccountItem }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl border p-5 space-y-4">
-      <div className="flex items-center gap-2 text-emerald-600 mb-1">
+      <div className="flex items-center gap-2 text-brand-600 mb-1">
         <KeyRound className="h-5 w-5" />
         <span className="text-sm font-medium">{ROLE_LABEL[account.role]}</span>
       </div>
@@ -77,7 +77,7 @@ function AccountCard({ account }: { account: AccountItem }) {
         </label>
         <input
           {...register("name")}
-          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
       </div>
@@ -88,7 +88,7 @@ function AccountCard({ account }: { account: AccountItem }) {
           type="password"
           {...register("newPassword")}
           placeholder="Kosongkan jika tidak ingin mengubah"
-          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         {errors.newPassword && <p className="text-xs text-red-500">{errors.newPassword.message}</p>}
         <p className="text-xs text-slate-400">Minimal 8 karakter, biarkan kosong jika tidak ingin ganti password</p>
@@ -99,7 +99,7 @@ function AccountCard({ account }: { account: AccountItem }) {
         <input
           type="password"
           {...register("confirmPassword")}
-          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>}
       </div>
@@ -107,7 +107,7 @@ function AccountCard({ account }: { account: AccountItem }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+        className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         Simpan Perubahan

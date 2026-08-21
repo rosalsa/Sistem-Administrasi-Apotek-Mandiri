@@ -78,7 +78,7 @@ export default async function DashboardPage() {
   }
 
   const cards = [
-    { label: "Pendapatan Hari Ini", value: formatRupiah(data.pendapatanHariIni), icon: Wallet, color: "bg-emerald-50 text-emerald-600" },
+    { label: "Pendapatan Hari Ini", value: formatRupiah(data.pendapatanHariIni), icon: Wallet, color: "bg-brand-50 text-brand-600" },
     { label: "Pendapatan Bulan Ini", value: formatRupiah(data.pendapatanBulanIni), icon: TrendingUp, color: "bg-blue-50 text-blue-600" },
     { label: "Total Transaksi Hari Ini", value: data.totalTransaksiHariIni.toString(), icon: Receipt, color: "bg-violet-50 text-violet-600" },
     { label: "Total Jenis Obat", value: data.totalJenisObat.toString(), icon: Pill, color: "bg-cyan-50 text-cyan-600" },
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
       <div className="bg-white rounded-xl border overflow-hidden">
         <div className="p-4 border-b flex items-center justify-between">
           <h3 className="font-semibold text-slate-800">Transaksi Terbaru</h3>
-          <Link href="/riwayat-penjualan" className="text-xs font-medium text-emerald-600 hover:underline">
+          <Link href="/riwayat-penjualan" className="text-xs font-medium text-brand-600 hover:underline">
             Lihat semua
           </Link>
         </div>

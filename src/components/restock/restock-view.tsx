@@ -87,7 +87,7 @@ export function RestockView({
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
       <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-2 bg-white rounded-xl border p-5 space-y-4 h-fit">
         <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-          <PackagePlus className="h-4 w-4 text-emerald-600" /> Form Restock
+          <PackagePlus className="h-4 w-4 text-brand-600" /> Form Restock
         </h3>
 
         <div className="space-y-1 relative">
@@ -102,7 +102,7 @@ export function RestockView({
             }}
             onFocus={() => setDropdownOpen(true)}
             placeholder="Ketik nama obat untuk mencari..."
-            className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
           {dropdownOpen && filteredMedicines.length > 0 && (
             <div className="absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-56 overflow-y-auto">
@@ -111,7 +111,7 @@ export function RestockView({
                   key={m.id}
                   type="button"
                   onClick={() => handleMedicineChange(m.id)}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 border-b last:border-0"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50 border-b last:border-0"
                 >
                   {m.name}
                 </button>
@@ -146,7 +146,7 @@ export function RestockView({
             </div>
             <div className="flex justify-between border-t pt-1.5">
               <span className="text-slate-500">Stok Setelah Restock</span>
-              <span className="font-semibold text-emerald-600">{stokSaatIni + totalMasuk} unit</span>
+              <span className="font-semibold text-brand-600">{stokSaatIni + totalMasuk} unit</span>
             </div>
           </div>
         )}
@@ -180,7 +180,7 @@ export function RestockView({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+          className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           Simpan Restock

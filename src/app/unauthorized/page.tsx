@@ -12,7 +12,7 @@ export default function UnauthorizedPage() {
         <p className="text-sm text-slate-500 max-w-sm">
           Anda tidak memiliki izin untuk mengakses halaman ini. Hubungi Apoteker jika Anda merasa ini adalah kesalahan.
         </p>
-        <Link href="/dashboard" className="inline-block mt-2 text-sm font-medium text-emerald-600 hover:underline">
+        <Link href="/dashboard" className="inline-block mt-2 text-sm font-medium text-brand-600 hover:underline">
           Kembali ke Dashboard
         </Link>
       </div>

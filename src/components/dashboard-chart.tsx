@@ -42,13 +42,13 @@ export function DashboardChart() {
         <div className="flex bg-slate-100 rounded-lg p-1 text-xs">
           <button
             onClick={() => setRange("monthly")}
-            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${range === "monthly" ? "bg-white shadow-sm text-emerald-700" : "text-slate-500"}`}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${range === "monthly" ? "bg-white shadow-sm text-brand-700" : "text-slate-500"}`}
           >
             Bulanan
           </button>
           <button
             onClick={() => setRange("yearly")}
-            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${range === "yearly" ? "bg-white shadow-sm text-emerald-700" : "text-slate-500"}`}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${range === "yearly" ? "bg-white shadow-sm text-brand-700" : "text-slate-500"}`}
           >
             Tahunan
           </button>
@@ -69,8 +69,8 @@ export function DashboardChart() {
           <AreaChart data={data}>
             <defs>
               <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#059669" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                <stop offset="5%" stopColor="#00007F" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#00007F" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -85,7 +85,7 @@ export function DashboardChart() {
               formatter={(value: number) => formatRupiah(value)}
               contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }}
             />
-            <Area type="monotone" dataKey="total" stroke="#059669" strokeWidth={2} fill="url(#colorTotal)" />
+            <Area type="monotone" dataKey="total" stroke="#00007F" strokeWidth={2} fill="url(#colorTotal)" />
           </AreaChart>
         </ResponsiveContainer>
       )}

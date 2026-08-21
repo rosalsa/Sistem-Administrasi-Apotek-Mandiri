@@ -59,7 +59,7 @@ export function Sidebar({ role }: { role: "PSA" | "APOTEKER" | "ASISTEN_APOTEKER
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-emerald-50 text-emerald-700"
+                  ? "bg-brand-50 text-brand-700"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               )}
             >

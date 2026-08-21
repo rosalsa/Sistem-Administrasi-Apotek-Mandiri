@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #059669; /* emerald-600 */
+  --color-primary: #00007F; /* brand blue */
   --color-secondary: #2563eb; /* blue-600 */
 }
 

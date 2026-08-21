@@ -10,7 +10,7 @@ export function QuickActions({ role }: { role: string }) {
   const canSeeLaporan = role === "PSA" || role === "APOTEKER" || role === "ADMIN"; // Laporan: Asisten tidak punya akses
 
   const actions = [
-    { href: "/input-data?tab=penjualan", label: "Transaksi Baru", icon: ShoppingCart, show: canSell, color: "bg-emerald-600 hover:bg-emerald-700" },
+    { href: "/input-data?tab=penjualan", label: "Transaksi Baru", icon: ShoppingCart, show: canSell, color: "bg-brand-600 hover:bg-brand-700" },
     { href: "/input-data?tab=restock", label: "Restock Obat", icon: PackagePlus, show: canRestock, color: "bg-blue-600 hover:bg-blue-700" },
     { href: "/obat?add=1", label: "Tambah Obat", icon: PlusCircle, show: canManageObat, color: "bg-violet-600 hover:bg-violet-700" },
     { href: "/laporan", label: "Lihat Laporan", icon: FileBarChart, show: canSeeLaporan, color: "bg-slate-700 hover:bg-slate-800" },

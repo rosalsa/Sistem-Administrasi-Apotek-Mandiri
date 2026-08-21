@@ -6,6 +6,7 @@ import { Search, Plus, Minus, Trash2, ShoppingCart, Loader2 } from "lucide-react
 import { formatRupiah } from "@/lib/utils";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { SalesHistoryImport } from "@/components/penjualan/sales-history-import";
 
 type MedicineOption = {
   id: string; name: string; stok: number;
@@ -157,6 +158,8 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
         <p className="text-sm text-slate-500">Buat transaksi penjualan baru</p>
       </div>
 
+      <SalesHistoryImport />
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Search & pilih obat */}
         <div className="lg:col-span-3 bg-white rounded-xl border p-4">
@@ -167,7 +170,7 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
               onChange={(e) => { setSearch(e.target.value); setDropdownOpen(true); }}
               onFocus={() => setDropdownOpen(true)}
               placeholder="Cari nama obat untuk ditambahkan ke keranjang..."
-              className="w-full pl-9 pr-3 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-9 pr-3 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
             {dropdownOpen && filteredMedicines.length > 0 && (
               <div className="absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-72 overflow-y-auto">
@@ -175,13 +178,13 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
                   <button
                     key={m.id}
                     onClick={() => addToCart(m)}
-                    className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 flex items-center justify-between text-sm border-b last:border-0"
+                    className="w-full text-left px-4 py-2.5 hover:bg-brand-50 flex items-center justify-between text-sm border-b last:border-0"
                   >
                     <div>
                       <p className="font-medium text-slate-800">{m.name}</p>
                       <p className="text-xs text-slate-500">Stok: {m.stok}</p>
                     </div>
-                    <p className="font-medium text-emerald-600">{formatRupiah(m.hargaUmum)}</p>
+                    <p className="font-medium text-brand-600">{formatRupiah(m.hargaUmum)}</p>
                   </button>
                 ))}
               </div>
@@ -210,7 +213,7 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
                         <option value="MEDIS2">Harga Medis 2 (15%)</option>
                         <option value="MEDIS3">Harga Medis 3 (8.5%)</option>
                       </select>
-                      <span className="text-xs text-emerald-600 font-medium">{formatRupiah(item.hargaSatuan)}</span>
+                      <span className="text-xs text-brand-600 font-medium">{formatRupiah(item.hargaSatuan)}</span>
                     </div>
                   </div>
 
@@ -266,20 +269,20 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
               value={bayar}
               onChange={(e) => setBayar(e.target.value)}
               placeholder="0"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
 
-          <div className="flex justify-between items-center bg-emerald-50 rounded-lg px-3 py-2.5">
-            <span className="text-sm text-emerald-700">Kembalian</span>
-            <span className="font-bold text-emerald-700">{formatRupiah(kembalian)}</span>
+          <div className="flex justify-between items-center bg-brand-50 rounded-lg px-3 py-2.5">
+            <span className="text-sm text-brand-700">Kembalian</span>
+            <span className="font-bold text-brand-700">{formatRupiah(kembalian)}</span>
           </div>
 
           <div className="space-y-2 pt-2">
             <button
               onClick={processTransaction}
               disabled={processing || cart.length === 0}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {processing && <Loader2 className="h-4 w-4 animate-spin" />}
               Proses Transaksi
@@ -309,12 +312,12 @@ export function KasirView({ medicines }: { medicines: MedicineOption[] }) {
       {successModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-xl max-w-sm w-full p-6 text-center space-y-3">
-            <div className="mx-auto h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-2xl">✓</div>
+            <div className="mx-auto h-14 w-14 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 text-2xl">✓</div>
             <h3 className="font-semibold text-slate-800 text-lg">Transaksi Berhasil</h3>
             <p className="text-sm text-slate-500">No. Transaksi: <span className="font-medium text-slate-700">{successModal}</span></p>
             <button
               onClick={() => setSuccessModal(null)}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm mt-2"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm mt-2"
             >
               Selesai
             </button>
