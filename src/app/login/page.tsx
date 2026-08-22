@@ -40,71 +40,87 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 via-white to-blue-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <img src="/logo.svg" alt="Logo Apotek Mandiri" className="mx-auto h-14 w-14 rounded-2xl object-contain mb-3" />
-          <h1 className="text-xl font-bold text-slate-800">Apotek Mandiri</h1>
-          <p className="text-sm text-slate-500 mt-1">Masuk untuk melanjutkan</p>
+    <div className="min-h-screen flex bg-white relative overflow-hidden">
+      {/* Kiri: foto apotek dengan gradasi halus menyatu ke putih */}
+      <div className="hidden lg:block lg:w-[58%] relative">
+        <img
+          src="/apotek-storefront.jpg"
+          alt="Apotek Mandiri"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            maskImage: "linear-gradient(to right, black 50%, transparent 92%)",
+            WebkitMaskImage: "linear-gradient(to right, black 50%, transparent 92%)",
+          }}
+        />
+      </div>
+
+      {/* Kanan: form login */}
+      <div className="w-full lg:w-[42%] relative z-10 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-8">
+            <img src="/logo.svg" alt="Logo Apotek Mandiri" className="mx-auto h-14 w-14 rounded-2xl object-contain mb-3" />
+            <h1 className="text-xl font-bold text-slate-800">Apotek Mandiri</h1>
+            <p className="text-sm text-slate-500 mt-1">Sahabat Sehat Anda</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
+            {error && (
+              <div className="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 border border-red-100">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700">Username / Email</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                  placeholder="Masukkan username"
+                  autoComplete="username"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                  placeholder="Masukkan password"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading ? "Memproses..." : "Masuk"}
+            </button>
+          </form>
+
+          <p className="text-center text-xs text-slate-400 mt-6">
+            © {new Date().getFullYear()} Apotek Mandiri.
+          </p>
         </div>
-
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
-          {error && (
-            <div className="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 border border-red-100">
-              {error}
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">Username / Email</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                placeholder="Masukkan username"
-                autoComplete="username"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                placeholder="Masukkan password"
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {loading ? "Memproses..." : "Masuk"}
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-slate-400 mt-6">
-          © {new Date().getFullYear()} Apotek Mandiri. Semua hak dilindungi.
-        </p>
       </div>
     </div>
   );
