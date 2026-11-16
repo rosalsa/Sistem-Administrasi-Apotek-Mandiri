@@ -43,9 +43,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Transaksi atomik: buat sale + kurangi stok + catat stock log + audit log
     const result = await prisma.$transaction(async (tx) => {
-      // Validasi stok sebelum memproses
       for (const item of items) {
         const medicine = await tx.medicine.findUnique({ where: { id: item.medicineId } });
         if (!medicine || medicine.stok < item.qty) {

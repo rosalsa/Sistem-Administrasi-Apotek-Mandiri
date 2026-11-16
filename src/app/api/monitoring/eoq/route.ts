@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
       select: { id: true, name: true, stok: true, minStok: true, hargaBeli: true },
     });
 
-    // Total qty terjual per obat dalam 365 hari terakhir
     const salesAgg = await prisma.saleDetail.groupBy({
       by: ["medicineId"],
       where: { sale: { createdAt: { gte: oneYearAgo } } },
@@ -31,8 +30,6 @@ export async function GET(req: NextRequest) {
     });
     const qtyMap = new Map(salesAgg.map((s) => [s.medicineId, s._sum.qty ?? 0]));
 
-    // Cari transaksi penjualan paling lama untuk menentukan berapa hari data historis tersedia
-    // (dipakai untuk menyetahunkan/annualize permintaan bila data belum genap 1 tahun)
     const earliestSale = await prisma.sale.findFirst({
       where: { createdAt: { gte: oneYearAgo } },
       orderBy: { createdAt: "asc" },
@@ -62,7 +59,6 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    // Urutkan: yang paling butuh restock di atas
     result.sort((a, b) => b.saranPembelian - a.saranPembelian);
 
     return NextResponse.json({

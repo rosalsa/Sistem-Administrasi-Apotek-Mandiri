@@ -38,5 +38,5 @@ export const EOQ_STATUS_COLOR: Record<EoqStatus, string> = {
   DATA_KURANG: "slate",
 };
 
-export const DEFAULT_ORDERING_COST = 50000; // asumsi biaya administrasi/transport per order (Rp)
-export const DEFAULT_HOLDING_COST_PERCENT = 20; // asumsi biaya penyimpanan = 20% dari harga beli per tahun
+export const DEFAULT_ORDERING_COST = 50000; 
+export const DEFAULT_HOLDING_COST_PERCENT = 20; 
