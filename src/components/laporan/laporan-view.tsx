@@ -8,6 +8,10 @@ import { toast } from "sonner";
 type SaleRow = { id: string; noTransaksi: string; tanggal: string; total: number; totalItem: number; kasir: string };
 type FilterType = "harian" | "bulanan" | "tahunan" | "custom";
 
+// Format sederhana untuk PDF/Excel (tanpa karakter khusus agar aman di font bawaan jsPDF)
+const rp = (n: number) => "Rp " + Math.round(n).toLocaleString("id-ID");
+const fmtDate = (d: Date) => d.toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" });
+
 export function LaporanView({ initialData, fullAccess }: { initialData: SaleRow[]; fullAccess: boolean }) {
   const [filterType, setFilterType] = useState<FilterType>("bulanan");
   const [customFrom, setCustomFrom] = useState("");
@@ -21,7 +25,7 @@ export function LaporanView({ initialData, fullAccess }: { initialData: SaleRow[
       if (filterType === "bulanan") return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
       if (filterType === "tahunan") return d.getFullYear() === now.getFullYear();
       if (filterType === "custom" && customFrom && customTo) {
-        return d >= new Date(customFrom) && d <= new Date(customTo + "T23:59:59");
+        return d >= new Date(customFrom + "T00:00:00") && d <= new Date(customTo + "T23:59:59.999");
       }
       return true;
     });
@@ -31,15 +35,114 @@ export function LaporanView({ initialData, fullAccess }: { initialData: SaleRow[
   const totalTransaksi = filtered.length;
   const totalItemTerjual = filtered.reduce((sum, s) => sum + s.totalItem, 0);
 
-  function exportPDF() {
-    // Implementasi nyata: gunakan jsPDF + autotable, lihat komentar di bawah
-    // const doc = new jsPDF(); doc.autoTable({...}); doc.save("laporan-penjualan.pdf");
-    toast.success("Laporan PDF sedang diunduh");
+  const periodeLabel = useMemo(() => {
+    const now = new Date();
+    if (filterType === "harian") return `Harian (${fmtDate(now)})`;
+    if (filterType === "bulanan") return `Bulanan (${now.toLocaleDateString("id-ID", { month: "long", year: "numeric" })})`;
+    if (filterType === "tahunan") return `Tahunan (${now.getFullYear()})`;
+    if (customFrom && customTo) return `${fmtDate(new Date(customFrom + "T00:00:00"))} s/d ${fmtDate(new Date(customTo + "T00:00:00"))}`;
+    return "Semua periode";
+  }, [filterType, customFrom, customTo]);
+
+  function fileStamp() {
+    const n = new Date();
+    const pad = (x: number) => String(x).padStart(2, "0");
+    return `${n.getFullYear()}${pad(n.getMonth() + 1)}${pad(n.getDate())}`;
   }
-  function exportExcel() {
-    // Implementasi nyata: gunakan library xlsx (SheetJS)
-    // const ws = XLSX.utils.json_to_sheet(filtered); ...
-    toast.success("Laporan Excel sedang diunduh");
+
+  function checkData() {
+    if (filtered.length === 0) {
+      toast.error("Tidak ada data pada periode ini untuk diexport");
+      return false;
+    }
+    if (filterType === "custom" && (!customFrom || !customTo)) {
+      toast.error("Pilih tanggal awal dan akhir terlebih dahulu");
+      return false;
+    }
+    return true;
+  }
+
+  async function exportPDF() {
+    if (!checkData()) return;
+    try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: autoTable } = await import("jspdf-autotable");
+      const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
+      doc.setFontSize(16);
+      doc.text("Laporan Penjualan - Apotek Mandiri", 40, 45);
+      doc.setFontSize(10);
+      doc.text(`Periode: ${periodeLabel}`, 40, 64);
+      doc.text(`Dicetak: ${new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })} WIB`, 40, 78);
+      doc.text(
+        `Total pendapatan: ${rp(totalPendapatan)}   |   Transaksi: ${totalTransaksi}   |   Item terjual: ${totalItemTerjual}`,
+        40,
+        96
+      );
+
+      autoTable(doc, {
+        startY: 110,
+        head: [["No", "No Transaksi", "Tanggal", "Item", "Total", "Kasir"]],
+        body: filtered.map((s, i) => [
+          String(i + 1),
+          s.noTransaksi,
+          new Date(s.tanggal).toLocaleString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "short", timeStyle: "short" }),
+          String(s.totalItem),
+          rp(s.total),
+          s.kasir,
+        ]),
+        foot: [["", "", "", String(totalItemTerjual), rp(totalPendapatan), ""]],
+        headStyles: { fillColor: [0, 0, 127] },
+        footStyles: { fillColor: [226, 232, 240], textColor: 20, fontStyle: "bold" },
+        styles: { fontSize: 8.5, cellPadding: 4 },
+        columnStyles: { 0: { cellWidth: 28 }, 3: { halign: "center" }, 4: { halign: "right" } },
+        margin: { left: 40, right: 40 },
+        didDrawPage: () => {
+          const h = doc.internal.pageSize.getHeight();
+          doc.setFontSize(8);
+          doc.text(`Halaman ${doc.getCurrentPageInfo().pageNumber}`, 40, h - 20);
+        },
+      });
+
+      doc.save(`laporan-penjualan-${fileStamp()}.pdf`);
+      toast.success("Laporan PDF berhasil diunduh");
+    } catch (e) {
+      console.error(e);
+      toast.error("Gagal membuat file PDF");
+    }
+  }
+
+  async function exportExcel() {
+    if (!checkData()) return;
+    try {
+      const XLSX = await import("xlsx");
+      const rows: (string | number)[][] = [
+        ["Laporan Penjualan - Apotek Mandiri"],
+        [`Periode: ${periodeLabel}`],
+        [`Dicetak: ${new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })} WIB`],
+        [],
+        ["No", "No Transaksi", "Tanggal", "Total Item", "Total (Rp)", "Kasir"],
+        ...filtered.map((s, i) => [
+          i + 1,
+          s.noTransaksi,
+          new Date(s.tanggal).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+          s.totalItem,
+          s.total,
+          s.kasir,
+        ]),
+        [],
+        ["", "", "TOTAL", totalItemTerjual, totalPendapatan, `${totalTransaksi} transaksi`],
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws["!cols"] = [{ wch: 6 }, { wch: 22 }, { wch: 22 }, { wch: 12 }, { wch: 16 }, { wch: 22 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Laporan Penjualan");
+      XLSX.writeFile(wb, `laporan-penjualan-${fileStamp()}.xlsx`);
+      toast.success("Laporan Excel berhasil diunduh");
+    } catch (e) {
+      console.error(e);
+      toast.error("Gagal membuat file Excel");
+    }
   }
 
   return (
